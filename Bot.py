@@ -727,7 +727,7 @@ async def payment_action(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             )
         await query.message.delete()
     # مدیریت دکمه‌های مرحله اول (تأیید، ناخوانا، ابطال)
-    elif len(callback_parts) >= 3 and action in ["confirm_payment", "unclear_payment", "cancel_payment"]:
+    elif len(callback_parts) == 3 and action in ["confirm_payment", "unclear_payment", "cancel_payment"]:
         try:
             user_id = int(callback_parts[1])
             event_id = int(callback_parts[2])
@@ -1069,7 +1069,7 @@ async def save_edited_event(update: Update, context: ContextTypes.DEFAULT_TYPE) 
         cost = 0 if cost == "رایگان" else int(cost.replace(",", "").replace(" تومان", ""))
 
         date = event_data["تاریخ"]
-        if not re.match(r"^\d{4}-\د{2}-\د{2}$", date):
+        if not re.match(r"^\d{4}-\d{2}-\d{2}$", date):
             raise ValueError("فرمت تاریخ باید YYYY-MM-DD باشد.")
 
         location = event_data["محل"]
@@ -1589,7 +1589,8 @@ def main() -> None:
             ],
             CONFIRM_PHONE: [CallbackQueryHandler(confirm_phone)],
         },
-        fallbacks=[CommandHandler("cancel", cancel)]
+        fallbacks=[CommandHandler("cancel", cancel)],
+        per_message=False
     )
 
     # ConversationHandler برای edit_profile_conv
@@ -1602,7 +1603,8 @@ def main() -> None:
                 MessageHandler(filters.TEXT & ~filters.COMMAND, edit_profile_value),
             ],
         },
-        fallbacks=[CommandHandler("cancel", cancel)]
+        fallbacks=[CommandHandler("cancel", cancel)],
+        per_message=False
     )
 
     # ConversationHandler برای add_event_conv
@@ -1621,7 +1623,8 @@ def main() -> None:
             EVENT_CAPACITY: [MessageHandler(filters.TEXT & ~filters.COMMAND, event_capacity)],
             CONFIRM_EVENT: [CallbackQueryHandler(save_event)],
         },
-        fallbacks=[CommandHandler("cancel", cancel)]
+        fallbacks=[CommandHandler("cancel", cancel)],
+        per_message=False
     )
 
     # ConversationHandler برای edit_event_conv
@@ -1633,7 +1636,8 @@ def main() -> None:
                 MessageHandler(filters.TEXT & ~filters.COMMAND, save_edited_event),
             ],
         },
-        fallbacks=[CommandHandler("cancel", cancel)]
+        fallbacks=[CommandHandler("cancel", cancel)],
+        per_message=False
     )
 
     # ConversationHandler برای toggle_event_conv
@@ -1642,7 +1646,8 @@ def main() -> None:
         states={
             DEACTIVATE_REASON: [CallbackQueryHandler(toggle_event_status)],
         },
-        fallbacks=[CommandHandler("cancel", cancel)]
+        fallbacks=[CommandHandler("cancel", cancel)],
+        per_message=False
     )
 
     # ConversationHandler برای announce_conv
@@ -1652,7 +1657,8 @@ def main() -> None:
             ANNOUNCE_GROUP: [CallbackQueryHandler(announce_group)],
             ANNOUNCE_MESSAGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, send_announcement)],
         },
-        fallbacks=[CommandHandler("cancel", cancel)]
+        fallbacks=[CommandHandler("cancel", cancel)],
+        per_message=False
     )
 
     # ConversationHandler برای manage_admins_conv
@@ -1665,7 +1671,8 @@ def main() -> None:
             ],
             REMOVE_ADMIN: [CallbackQueryHandler(remove_admin)],
         },
-        fallbacks=[CommandHandler("cancel", cancel)]
+        fallbacks=[CommandHandler("cancel", cancel)],
+        per_message=False
     )
 
     # ConversationHandler برای manual_reg_conv
@@ -1676,7 +1683,8 @@ def main() -> None:
             MANUAL_REG_STUDENT_ID: [MessageHandler(filters.TEXT & ~filters.COMMAND, manual_registration_student_id)],
             CONFIRM_MANUAL_REG: [CallbackQueryHandler(confirm_manual_registration)],
         },
-        fallbacks=[CommandHandler("cancel", cancel)]
+        fallbacks=[CommandHandler("cancel", cancel)],
+        per_message=False
     )
 
     # ConversationHandler برای report_conv
@@ -1686,7 +1694,8 @@ def main() -> None:
             REPORT_TYPE: [CallbackQueryHandler(report_type)],
             REPORT_PERIOD: [CallbackQueryHandler(generate_report)],
         },
-        fallbacks=[CommandHandler("cancel", cancel)]
+        fallbacks=[CommandHandler("cancel", cancel)],
+        per_message=False
     )
 
     # ثبت هندلرها
